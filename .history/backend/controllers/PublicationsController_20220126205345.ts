@@ -1,4 +1,4 @@
-import Posts from '../models/Posts';
+import Publications from '../models/Publications';
 import { Response, Request } from 'express';
 import getToken from '../helpers/get-token';
 import getUserByToken from '../helpers/get-user-by-token';
@@ -6,8 +6,8 @@ import mongoose from 'mongoose';
 
 const ObjectId = mongoose.Types.ObjectId
 
-export default class PostsController{
-  static async createPost(req: Request, res: Response){
+export default class PublicationsController{
+  static async createPublication(req: Request, res: Response){
     const images = req.files
     const subtitle: string = req.body.subtitle
 
@@ -19,7 +19,7 @@ export default class PostsController{
     const token = getToken(req)
     const user = await getUserByToken(token)
 
-    const posts = new Posts ({
+    const publication = new Publications ({
       images: [],
       subtitle: subtitle,
       user: {
@@ -30,15 +30,19 @@ export default class PostsController{
       }
     })
 
-    images.map((image) => {
-      posts.image.push(image.filename)
-    })
+    if(Array.isArray(images)){
 
+      images.map((image: Express.Multer.File) => {
+      publication.images.push(image.filename)
+      })
+
+    }
+   
     try{
-      const newPost = await posts.save()
+      const newPublication = await publication.save()
       res.status(201).json({
         message: 'Publicação criada com sucesso!',
-        newPost: newPost,
+        newPost: newPublication,
       })
     }catch(error){
       res.status(500).json({message: error})
