@@ -1,1 +1,0 @@
-import conn from '../db/'
