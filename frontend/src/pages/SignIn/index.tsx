@@ -43,7 +43,7 @@ export default function SignIn(){
               <button type="submit">{loading ? 'Carregando...' : 'Entrar'}</button>
             </form>
           </div>
-          <span>Não está cadastrado?<Link to="/register">clique aqui</Link></span>
+          <span>Não está cadastrado?<Link to="/register"> Clique aqui</Link></span>
         </main>
     
     </div>

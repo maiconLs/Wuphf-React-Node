@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/api";
 
 import Header from "../../components/index";
@@ -85,7 +85,9 @@ export default function EditUser() {
 
   return (
     <div>
-      <Header />
+      <Header
+        avatar={`${process.env.REACT_APP_API}/images/users/${user.image}`}
+      />
       <div className="formUser">
         <div>
           <h1>Editar perfil</h1>

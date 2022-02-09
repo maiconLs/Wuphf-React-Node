@@ -1,19 +1,54 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
-import useAuth from '../hooks/useAuth';
-import logo from '../assets/wuphf.png'
-import './header.scss'
+import useAuth from "../hooks/useAuth";
+import Modal from "react-modal";
 
-import { GrHomeRounded } from 'react-icons/gr'
-import { FiHeart } from 'react-icons/fi'
-import {CgProfile} from 'react-icons/cg'
-import { BiExit } from 'react-icons/bi'
+import Publication from "../pages/Publications";
 
-function Header(){
-  const { logout } = useAuth()
-  const pathName = window.location.pathname
+import logo from "../assets/wuphf.png";
 
-  return(
+import "./header.scss";
+
+import { GrHomeRounded } from "react-icons/gr";
+import { FiHeart } from "react-icons/fi";
+import { CgProfile } from "react-icons/cg";
+import { BiExit } from "react-icons/bi";
+import { FiPlusSquare } from "react-icons/fi";
+
+interface IAvatar {
+  avatar: string;
+}
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
+
+Modal.setAppElement("#root");
+
+function Header(props: IAvatar) {
+  const { logout } = useAuth();
+  const pathName = window.location.pathname;
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {}
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  return (
     <header className="header">
       <div className="container">
         <div>
@@ -21,30 +56,48 @@ function Header(){
         </div>
         <nav>
           <ul>
-            <li className={pathName === '/' ? 'active' : ''} >
+            <li className={pathName === "/" ? "active" : ""}>
               <Link to="/">
-                <GrHomeRounded  color="#FFF" size={24}/> 
+                <GrHomeRounded color="#FFF" size={25} />
               </Link>
             </li>
-            <li className={pathName === '/notification' ? 'active' : ''}>
+            <li className={pathName === "/notification" ? "active" : ""}>
               <Link to="/notification">
-                <FiHeart  size={24}/>
+                <FiHeart size={25} />
               </Link>
             </li>
-            <li className={pathName === '/profile' ? 'active' : ''}>
+            <li  onClick={openModal}>
+              <FiPlusSquare size={25} />
+            </li>
+            <li className={pathName === "/profile" ? "active" : ""}>
               <Link to="/profile">
-                <CgProfile  size={24}/>
+                {props.avatar !==
+                `${process.env.REACT_APP_API}/images/users/undefined` ? (
+                  <img className="avatar" src={props.avatar} alt="avatar" />
+                ) : (
+                  <CgProfile size={25} />
+                )}
               </Link>
             </li>
-            <li onClick={logout}>    
-                <BiExit size={24}/>   
+            <li onClick={logout}>
+              <BiExit size={24} />
             </li>
-
           </ul>
         </nav>
       </div>
+
+      <Modal
+        isOpen={modalIsOpen}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <button onClick={closeModal}>Close</button>
+        <Publication />
+      </Modal>
     </header>
-  )
+  );
 }
 
 export default Header;

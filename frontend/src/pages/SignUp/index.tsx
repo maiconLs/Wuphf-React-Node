@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 
-import image from '../../assets/estudando.png' 
+import image from '../../assets/wuphf.png' 
 import './signup.scss'
 
 interface IUser {
@@ -51,7 +51,7 @@ export default function SignUp(){
               <button type="submit">{loading ? 'Carregando...' : 'Cadastrar'}</button>
             </form>
           </div>
-          <span>Já tem uma conta? <Link to="/login">clique aqui</Link></span>
+          <span>Já tem uma conta? <Link to="/login"> Clique aqui</Link></span>
         </main>
     
     </div>

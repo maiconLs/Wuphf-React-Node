@@ -1,5 +1,40 @@
 .formUser{
-  padding-top: 80px;
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-between;
+  align-items: center;
+
+  div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img{
+      width:160px;
+      height: 160px;
+    }
+  }
+
+  form{
+    display: flex;
+    flex-direction: column;
+
+    input{
+      margin-top: 15px;
+      padding: 0.7em;
+      border: 1px solid #777;
+      border-radius: 5px;
+    }
+
+    input[type='submit']{
+      background-color:#f76301  ;
+      color: #FFF;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
 }
 
 .editUser{
@@ -7,4 +42,5 @@
   height: 90px;
   border-radius: 100%;
   object-fit: cover;
+  display: flex;
 }

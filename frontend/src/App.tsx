@@ -9,7 +9,6 @@ import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import Profile from './pages/Profile';
 import EditUser from './pages/EditUser';
-import Publication from './pages/Publications';
 
 function App() {
   return (
@@ -22,7 +21,6 @@ function App() {
           <Route path="/login" element={<SignIn/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/edit" element={<EditUser/>}/>
-          <Route path="/createpost" element={<Publication/>}/>
 
         </Routes>
       </AuthProvider>

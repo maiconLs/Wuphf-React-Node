@@ -4,8 +4,8 @@
   position: fixed;
   z-index: 3;
   display: flex;
-  border-bottom: 1px solid #ccc;
-  background-color: #ccc;
+  border-bottom: 1px solid rgb(156, 154, 154);
+  background-color: #FFF;
 
   .container{
     display: flex;
@@ -24,7 +24,7 @@
 
     nav{
       display: flex;
-      max-width: 200px;
+      max-width: 260px;
       width: 100%;
 
       ul{
@@ -33,9 +33,22 @@
         list-style: none;
         width: 100%;
         justify-content:space-around;
+        align-items: center;
+      
 
         li{
           cursor: pointer;
+          width: 60px;
+          padding: 5px;
+          align-items: center;
+        }
+
+        .avatar{
+          border-radius: 100%;
+          width: 30px;
+          height: 30px;
+          object-fit: cover;
+  
         }
       }
 
@@ -48,7 +61,7 @@
       }
 
       .active a svg{
-        fill: black;
+        fill:  rgb(101, 81, 190);
       }
     }
   }

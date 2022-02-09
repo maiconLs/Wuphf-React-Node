@@ -1,9 +1,7 @@
 import api from "../../services/api";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import Header from "../../components/index";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -17,20 +15,44 @@ interface IPost {
   [key: string]: any;
 }
 
+interface IUser {
+  name: string;
+  username: string;
+  email: string;
+  _id: string;
+  image?: string;
+  [key: string]: any;
+}
+
 export default function Publication() {
-  const [post, setPost] = useState({} as IPost);
+  const [user, setUser] = useState({} as IUser);
+  const [loading, setLoading] = useState(false);
+  const [post, setPost] = useState([] as unknown as IPost);
   const [preview, setPreview] = useState([] as any);
   const [token] = useState(localStorage.getItem("token") || "");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    api
+      .get("/users/checkuser", {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)} `,
+        },
+      })
+      .then((response) => {
+        setUser(response.data);
+      });
+  }, [token]);
+
   function onFileChange(e: any) {
     setPreview(Array.from(e.target.files));
     setPost({ ...post, images: [...e.target.files] });
+    console.log(Array.from(e.target.files))
   }
 
   function handleChange(e: any) {
     setPost({ ...post, [e.target.name]: e.target.value });
-    console.log(post)
+    console.log(post);
   }
 
   async function handleSubmit(e: any) {
@@ -47,18 +69,19 @@ export default function Publication() {
       }
     });
 
-    formData.append("post", JSON.stringify(postFormData));
+    formData.append("publications", JSON.stringify(postFormData));
 
     await api
-      .post(`publications/createpublication`, formData, {
+      .post(`/publications/createpublication`, formData, {
         headers: {
           Authorization: `Bearer ${JSON.parse(token)}`,
           "Content-Type": "multipart/form-data",
         },
       })
       .then((response) => {
-        navigate("/home");
+        navigate("/");
         toast.success("Post cadastrado com sucesso");
+        console.log(response.data);
         return response.data;
       })
       .catch((err) => {
@@ -69,7 +92,7 @@ export default function Publication() {
 
   return (
     <div>
-      <Header />
+      
       <section className="container_home">
         <h1>Publicação</h1>
         <div>
@@ -87,7 +110,7 @@ export default function Publication() {
                   <img
                     src={`${process.env.REACT_APP_API}/images/posts/${image}`}
                     alt={post.name}
-                    key={`${post.name}+${index}`}
+                    key={`${post._id}+${index}`}
                   />
                 ))}
           </div>
@@ -95,7 +118,7 @@ export default function Publication() {
 
         <form onSubmit={handleSubmit}>
           <input type="file" name="images" multiple onChange={onFileChange} />
-          <input type="text" name="legenda" onChange={handleChange} />
+          <input type="text" name="subtitle" onChange={handleChange} />
           <button type="submit">Enviar</button>
         </form>
       </section>

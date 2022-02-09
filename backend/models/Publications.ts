@@ -1,22 +1,31 @@
 import mongoose from "../db/conn";
 const { Schema } = mongoose;
+const ObjectId = mongoose.Types.ObjectId;
 
 const Publications = mongoose.model(
   "Publications",
   new Schema(
     {
-      image: {
+      images: {
         type: Array,
         required: true,
       },
       subtitle: {
         type: String,
       },
-      comment: {
-        type: String,
-      },
-      like: {
-        type: Number,
+      Likes: [{ type: ObjectId, ref: "User" }],
+      Comments: [
+        {
+          Text: String,
+          postedBy: {
+            type: ObjectId,
+            ref: "User",
+          },
+        },
+      ],
+      postedBy: {
+        type: ObjectId,
+        ref: "User",
       },
       user: Object,
     },

@@ -11,10 +11,10 @@ export default class PublicationsController {
     const images = req.files;
     const subtitle: string = req.body.subtitle;
 
-    if (!images) {
-      res.status(422).json({ message: "A imagem é obrigatória!" });
-      return;
-    }
+    // if (images.length === 0 ){
+    //   res.status(422).json({ message: "A imagem é obrigatória!" });
+    //   return;
+    // }
 
     const token = getToken(req);
     const user = await getUserByToken(token);
@@ -37,6 +37,7 @@ export default class PublicationsController {
     }
 
     try {
+      await publication.save();
       const newPublication = await publication.save();
       res.status(201).json({
         message: "Publicação criada com sucesso!",
@@ -45,5 +46,23 @@ export default class PublicationsController {
     } catch (error) {
       res.status(500).json({ message: error });
     }
+  }
+
+  static async getAll(req: Request, res: Response) {
+    const publication = await Publications.find().sort("-createdAt");
+    res.status(200).json({ publication: publication });
+  }
+
+  static async getAllUserPublications(req: Request, res: Response) {
+    const token = getToken(req);
+    const user = await getUserByToken(token);
+
+    const publication = await Publications.find({ "user._id": user._id }).sort(
+      "-createdAt"
+    );
+
+    res.status(200).json({
+      publication,
+    });
   }
 }

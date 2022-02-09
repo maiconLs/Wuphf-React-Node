@@ -147,6 +147,7 @@ export default class UserController {
     }
   }
 
+
   static async getUserById(req: Request, res: Response) {
     const id = req.params.id;
 
@@ -160,7 +161,10 @@ export default class UserController {
     res.status(200).json({ message: user });
   }
 
+
+
   static async editUser(req: Request, res: Response) {
+    
     const token = getToken(req);
 
     const user = await getUserByToken(token);
