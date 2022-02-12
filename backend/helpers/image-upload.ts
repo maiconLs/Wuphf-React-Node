@@ -8,6 +8,7 @@ const imageStore = diskStorage({
     file,
     cb: (arg0: any, arg1: string) => void
   ) {
+    
     let folder = "";
 
     if (req.baseUrl.includes("users")) {
