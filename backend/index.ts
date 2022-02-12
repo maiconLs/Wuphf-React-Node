@@ -11,9 +11,9 @@ app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.static("public"));
 
 import UserRoutes from "./routes/UserRoutes";
-import PublicationsRoutes from "./routes/PublicationsRoutes";
+import PostsRoutes from "./routes/PostsRoutes";
 
 app.use("/users", UserRoutes);
-app.use("/publications", PublicationsRoutes);
+app.use("/posts", PostsRoutes);
 
 app.listen(5000, () => console.log("Server is running"));

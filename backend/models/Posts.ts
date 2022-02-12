@@ -2,8 +2,8 @@ import mongoose from "../db/conn";
 const { Schema } = mongoose;
 const ObjectId = mongoose.Types.ObjectId;
 
-const Publications = mongoose.model(
-  "Publications",
+const Posts = mongoose.model(
+  "Posts",
   new Schema(
     {
       images: {
@@ -33,4 +33,4 @@ const Publications = mongoose.model(
   )
 );
 
-export default Publications;
+export default Posts;

@@ -1,4 +1,4 @@
-import Publications from "../models/Publications";
+import Posts from "../models/Posts";
 import { Response, Request } from "express";
 import getToken from "../helpers/get-token";
 import getUserByToken from "../helpers/get-user-by-token";
@@ -6,22 +6,17 @@ import mongoose from "mongoose";
 
 const ObjectId = mongoose.Types.ObjectId;
 
-export default class PublicationsController {
-  static async createPublication(req: Request, res: Response) {
+export default class PostsController {
+  static async createPost(req: Request, res: Response) {
     const images = req.files;
     const subtitle: string = req.body.subtitle;
-
-    // if (images.length === 0 ){
-    //   res.status(422).json({ message: "A imagem é obrigatória!" });
-    //   return;
-    // }
 
     const token = getToken(req);
     const user = await getUserByToken(token);
 
-    const publication = new Publications({
-      images: [],
+    const posts = new Posts({ 
       subtitle: subtitle,
+      images: [],
       user: {
         _id: user._id,
         name: user.name,
@@ -30,18 +25,20 @@ export default class PublicationsController {
       },
     });
 
+    
     if (Array.isArray(images)) {
       images.map((image: Express.Multer.File) => {
-        publication.images.push(image.filename);
+        posts.images.push(image.filename);
+        posts.images.push("test")
       });
     }
 
     try {
-      await publication.save();
-      const newPublication = await publication.save();
+      await posts.save();
+      const newPost = await posts.save();
       res.status(201).json({
         message: "Publicação criada com sucesso!",
-        newPost: newPublication,
+        newPost: newPost,
       });
     } catch (error) {
       res.status(500).json({ message: error });
@@ -49,20 +46,20 @@ export default class PublicationsController {
   }
 
   static async getAll(req: Request, res: Response) {
-    const publication = await Publications.find().sort("-createdAt");
-    res.status(200).json({ publication: publication });
+    const posts = await Posts.find().sort("-createdAt");
+    res.status(200).json({ publication: posts });
   }
 
-  static async getAllUserPublications(req: Request, res: Response) {
+  static async getAllUserPosts(req: Request, res: Response) {
     const token = getToken(req);
     const user = await getUserByToken(token);
 
-    const publication = await Publications.find({ "user._id": user._id }).sort(
+    const posts = await Posts.find({ "user._id": user._id }).sort(
       "-createdAt"
     );
 
     res.status(200).json({
-      publication,
+      posts,
     });
   }
 }
