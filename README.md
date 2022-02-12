@@ -2,7 +2,7 @@
  
 ![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
-## ✔️ techniques and technologies used
+## ✔️ Techniques and technologies used
 
 - ``TypeScript``
 - ``NodeJs``
