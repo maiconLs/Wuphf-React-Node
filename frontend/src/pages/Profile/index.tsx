@@ -45,7 +45,7 @@ export default function Profile(): JSX.Element {
   }, [token]);
 
   useEffect(() => {
-    api.get("/publications/mypublications", {
+    api.get("/posts/myposts", {
       headers: {
         Authorization: `Baerer ${JSON.parse(token)}`
       },

@@ -4,7 +4,7 @@ import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import Modal from "react-modal";
 
-import Publication from "../pages/Publications";
+import Posts from "../pages/Posts";
 
 import logo from "../assets/wuphf.png";
 
@@ -94,7 +94,7 @@ function Header(props: IAvatar) {
         contentLabel="Example Modal"
       >
         <button onClick={closeModal}>Close</button>
-        <Publication />
+        <Posts />
       </Modal>
     </header>
   );
