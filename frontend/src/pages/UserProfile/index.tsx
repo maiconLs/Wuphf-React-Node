@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import api from '../../services/api'
 
@@ -8,49 +8,80 @@ import ShowPost from '../../components/ShowPost'
 
 import avatar from '../../assets/avatar.png'
 
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.min.css'
+
 import { UserType, PostType } from '../../types'
 
-import { Slide } from 'react-slideshow-image'
-import 'react-slideshow-image/dist/styles.css'
+import '../Profile/profile.scss'
 
-import './profile.scss'
-
-export default function Profile(): JSX.Element {
+export default function UserProfile(): JSX.Element {
   const [user, setUser] = useState({} as UserType)
+  const [showFollow, setShowFollow] = useState('')
+  const { userid } = useParams()
   const [posts, setPosts] = useState([] as unknown as PostType)
   const [token] = useState(localStorage.getItem('token') || '')
-  const [following, setFollowing] = useState()
-  const [followers, setFollowers] = useState()
-  const [postLength, setPostLength] = useState()
+  const [following, setFollowing] = useState(Number)
+  const [followers, setFollowers] = useState(Number)
+  const [postLength, setPostLength] = useState(Number)
   const [showPostModal, setShowPostModal] = useState(false)
   const [idPost, setIdPost] = useState('')
 
   useEffect(() => {
     api
-      .get('/users/checkuser', {
+      .get(`/users/${userid}`, {
         headers: {
           Authorization: `Bearer ${JSON.parse(token)}`,
         },
       })
       .then((response) => {
-        setUser(response.data)
-        setFollowing(response.data.following.length)
-        setFollowers(response.data.followers.length)
+        setUser(response.data.user)
+        setPosts(response.data.posts)
+        setFollowing(response.data.user.following.length)
+        setFollowers(response.data.user.followers.length)
+        setPostLength(response.data.posts.length)
       })
-  }, [token])
+  }, [userid, token])
 
   useEffect(() => {
     api
-      .get('/posts/myposts', {
+      .get('/users/checkuser', {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)} `,
+        },
+      })
+      .then((response) => {
+        console.log(response.data.following.includes(user._id))
+        if (response.data.following.includes(user._id)) {
+          setShowFollow('Unfollow')
+        } else {
+          setShowFollow('Follow')
+        }
+      })
+  }, [token])
+
+  function follow(userId: number) {
+    api
+      .put(`users/follow/${userId}`, {
         headers: {
           Authorization: `Baerer ${JSON.parse(token)}`,
         },
       })
       .then((response) => {
-        setPosts(response.data.posts)
-        setPostLength(response.data.posts.length)
+        if (response.data.following.includes(user._id)) {
+          setShowFollow('Follow')
+          setFollowers(followers - 1)
+        } else {
+          setShowFollow('Unfollow')
+          setFollowers(followers + 1)
+        }
+        return response.data
       })
-  }, [token])
+      .catch((error) => {
+        toast.error(JSON.stringify(error.response.data.message))
+        return error.response.data
+      })
+  }
 
   function togglePostModal(postId: string) {
     setShowPostModal(!showPostModal)
@@ -75,9 +106,7 @@ export default function Profile(): JSX.Element {
           <section>
             <div className='row1'>
               <h2>{user.username}</h2>
-              <button>
-                <Link to='/edit'>Edit profile</Link>
-              </button>
+              <button onClick={() => follow(user._id)}>{showFollow}</button>
             </div>
 
             <div className='row2'>
@@ -125,18 +154,16 @@ export default function Profile(): JSX.Element {
           <div className='posts'>
             {posts.length > 0 &&
               posts.map((post) => (
-                <>
-                  <div
-                    className='post'
-                    onClick={() => togglePostModal(post._id)}
-                    key={post._id}
-                  >
-                    <img
-                      src={`${process.env.REACT_APP_API}/images/posts/${post.images[0]}`}
-                      alt='publicação do usuário'
-                    />
-                  </div>
-                </>
+                <div
+                  className='post'
+                  onClick={() => togglePostModal(post._id)}
+                  key={post._id}
+                >
+                  <img
+                    src={`${process.env.REACT_APP_API}/images/posts/${post.images[0]}`}
+                    alt='publicação do usuário'
+                  />
+                </div>
               ))}
             {posts.length === 0 && <p>There are no registered posts yet!</p>}
           </div>

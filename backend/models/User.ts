@@ -1,8 +1,10 @@
-import mongoose from "../db/conn";
-const { Schema } = mongoose;
+import mongoose from '../db/conn'
+const { Schema } = mongoose
+
+const ObjectId = mongoose.Types.ObjectId;
 
 const User = mongoose.model(
-  "User",
+  'User',
 
   new Schema(
     {
@@ -29,9 +31,19 @@ const User = mongoose.model(
         type: String,
         required: true,
       },
+      followers: [{
+        type: ObjectId,
+        default: [],
+        ref: 'User'
+      }],
+      following: [{
+        type: ObjectId,
+        default: [],
+        ref: 'User'
+      }],
     },
     { timestamps: true }
   )
-);
+)
 
-export default User;
+export default User

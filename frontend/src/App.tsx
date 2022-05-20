@@ -8,9 +8,12 @@ import Home from './pages/Home';
 import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import Profile from './pages/Profile';
+import UserProfile from './pages/UserProfile';
 import EditUser from './pages/EditUser';
+import AllPosts from './pages/AllPosts';
 
 function App() {
+
   return (
    <BrowserRouter>
     <AuthProvider>
@@ -20,7 +23,9 @@ function App() {
           <Route path="/register" element={<SignUp/>}/>
           <Route path="/login" element={<SignIn/>}/>
           <Route path="/profile" element={<Profile/>}/>
+          <Route path={"/:userid"} element={<UserProfile/>}/>
           <Route path="/edit" element={<EditUser/>}/>
+          <Route path="/allposts" element={<AllPosts/>}/>
 
         </Routes>
       </AuthProvider>

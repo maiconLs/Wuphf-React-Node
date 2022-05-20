@@ -13,8 +13,11 @@ const Posts = mongoose.model(
       subtitle: {
         type: String,
       },
-      Likes: [{ type: ObjectId, ref: "User" }],
-      Comments: [
+      likes: {
+        type: Array,
+        default: [],
+      },
+      comments: [
         {
           Text: String,
           postedBy: {
