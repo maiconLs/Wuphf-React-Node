@@ -10,8 +10,8 @@ app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 app.use(express.static("public"));
 
-import UserRoutes from "./routes/UserRoutes";
-import PostsRoutes from "./routes/PostsRoutes";
+import UserRoutes from "./src/routes/UserRoutes";
+import PostsRoutes from "./src/routes/PostsRoutes";
 
 app.use("/users", UserRoutes);
 app.use("/posts", PostsRoutes);

@@ -17,21 +17,7 @@ import 'react-toastify/dist/ReactToastify.min.css'
 
 import './post.scss'
 import { Link } from 'react-router-dom'
-
-type Posts = {
-  likes: number[]
-  length: number
-  subtitle: string[]
-  comments: [c: { _id: string; Text: string }]
-  _id: string
-  user: {
-    _id: string
-    username: string
-    image: string
-  }
-  images: string[]
-  map(arg0: (image: string, index: number) => void): import('react').ReactNode
-}
+import { IPostModel } from '../../lib/post/interfaces/IPostModel'
 
 type Users = {
   name: string
@@ -43,7 +29,7 @@ type Users = {
 }
 
 type UserPost = {
-  post: Posts
+  post: IPostModel
   user: Users
 }
 
@@ -72,7 +58,7 @@ export default function Post({ post, user }: UserPost) {
 
   function commentHandler(postId: string) {
     try {
-      api.put(`/posts/${postId}/comment`, { Text: comment, id: user._id })
+      api.put(`/posts/${postId}/comment`, { text: comment, id: user._id })
       setCurrentComment(comment)
       setUserName(user.username)
       setComment('')
@@ -175,7 +161,7 @@ export default function Post({ post, user }: UserPost) {
           </Slide>
         ) : (
           <div className='image' key={post._id}>
-            <img
+            <img 
               src={`${process.env.REACT_APP_API}/images/posts/${post.images[0]}`}
               alt='user publication'
             />
@@ -214,14 +200,14 @@ export default function Post({ post, user }: UserPost) {
 
           <div>
             {' '}
-            {post.comments.length > 0 &&
-              (post.comments.length > 1 ? (
+            {post.metadata.commentsLength > 0 &&
+              (post.metadata.commentsLength > 1 ? (
                 <div className='see_comment' onClick={() => togglePostModal()}>
-                  see all {post.comments.length} comments
+                  see all {post.metadata.commentsLength} comments
                 </div>
               ) : (
                 <div className='see_comment' onClick={() => togglePostModal()}>
-                  see {post.comments.length} comment
+                  see {post.metadata.commentsLength} comment
                 </div>
               ))}
           </div>

@@ -19,7 +19,7 @@ const Posts = mongoose.model(
       },
       comments: [
         {
-          Text: String,
+          text: String,
           postedBy: {
             type: ObjectId,
             ref: "User",
@@ -31,6 +31,12 @@ const Posts = mongoose.model(
         ref: "User",
       },
       user: Object,
+      metadata: {
+        commentsLength: {
+          type: Number,
+          default: 0
+        }
+      }
     },
     { timestamps: true }
   )

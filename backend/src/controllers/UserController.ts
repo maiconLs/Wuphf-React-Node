@@ -153,7 +153,7 @@ export default class UserController {
     const posts = await Posts.find({ 'user._id': user._id }).sort('-createdAt')
 
     if (!user) {
-      res.status(422).json({ message: 'Ususário não encontrado' })
+      res.status(422).json({ message: 'Usuário não encontrado' })
       return
     }
 
@@ -278,6 +278,15 @@ export default class UserController {
       }
     } else {
       res.status(403).json('you cant follow yourself')
+    }
+  }
+
+  static async getUserSuggestions(req: Request, res: Response) {
+    try {
+      const users = await User.find({ _id: { $ne: req.user.id }}).sort('-createdAt').limit(4).select(["name", "image"]);
+      res.status(200).json(users)
+    } catch (error) {
+      res.status(500).json(error)
     }
   }
 }

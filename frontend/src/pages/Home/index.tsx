@@ -1,5 +1,5 @@
 import api from '../../services/api'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import Header from '../../components/Header/index'
 import Post from '../../components/Post'
@@ -9,6 +9,7 @@ import avatar from '../../assets/avatar.png'
 
 import { UserType } from '../../types'
 import { Link } from 'react-router-dom'
+import { UserService } from '../../services/UserService'
 
 type PostType = {
   map(arg0: (p: any) => JSX.Element): import('react').ReactNode
@@ -24,6 +25,14 @@ export default function Home() {
   const [user, setUser] = useState({} as UserType)
   const [posts, setPosts] = useState([] as unknown as PostType)
   const [token] = useState(localStorage.getItem('token') || '')
+  const [suggestions, setSuggestions] = useState<any>([])
+
+  const getUserSuggestions = useCallback(() => {
+    if (token) {
+      UserService.getUserSuggestions(token)
+        .then(setSuggestions);
+    }
+  }, [token]);
 
   useEffect(() => {
     api
@@ -35,7 +44,8 @@ export default function Home() {
       .then((response) => {
         setUser(response.data)
       })
-  }, [token])
+    getUserSuggestions();
+  }, [token, getUserSuggestions])
 
   useEffect(() => {
     api
@@ -85,6 +95,7 @@ export default function Home() {
           <section>
             <span>
               <strong>Suggestions for you</strong>
+              {suggestions.map((suggestion: any) => suggestion._id)}
             </span>
           </section>
         </article>

@@ -1,74 +1,27 @@
-import api from '../../services/api'
-import { useState, useEffect } from 'react'
-
+import { useCallback, useEffect, useState } from 'react'
 import { FiX } from 'react-icons/fi'
-
 import { Slide } from 'react-slideshow-image'
 import 'react-slideshow-image/dist/styles.css'
-import '../styleSlide/slide.scss'
-
+import { IPostModel } from '../../lib/post/interfaces/IPostModel'
+import { PostService } from '../../services/PostService'
 import { UserType } from '../../types'
-
 import '../CreatePosts/CreatePosts.scss'
-
-type Posts = {
-  likes: number[]
-  length: number
-  subtitle: string
-  comments: [c: { _id: string; Text: string }]
-  _id: string
-  images: string[]
-  map(arg0: (image: string, index: number) => void): import('react').ReactNode
-}
+import '../styleSlide/slide.scss'
 
 export default function ShowPost({ close, postId, userId }: any) {
   const [user, setUser] = useState({} as UserType)
-  const [userComment, setUserComment] = useState([] as any)
-  const [post, setPost] = useState([] as unknown as Posts)
+  const [post, setPost] = useState<IPostModel>()
   const [token] = useState(localStorage.getItem('token') || '')
-  let userByComment: any = []
+
+  const getPost = useCallback(() => {
+    PostService.getPostById(token, postId)
+      .then(setPost)
+      .catch(error => alert("Erro ao buscar post by id"));
+  }, [token, postId]);
 
   useEffect(() => {
-    api
-      .get(`/posts/postById/${postId}`, {
-        headers: {
-          Authorization: `Baerer ${JSON.parse(token)}`,
-        },
-      })
-      .then((response) => {
-        setPost(response.data.post)
-        const users = response.data.post.comments.map((comment: any) => {
-          return comment.postedBy
-        })
-
-      
-        users.map(async (id: string) => {
-          return (await api
-            .get(`/users/${id}`, {
-              headers: {
-                Authorization: `Bearer ${JSON.parse(token)}`,
-              },
-            })
-            .then((response) => {
-              userByComment.push(response.data.user)
-              setUserComment(userByComment)
-              console.log(userByComment)
-            }))
-        })
-      })
-  }, [token, userComment])
-
-  useEffect(() => {
-    api
-      .get(`/users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`,
-        },
-      })
-      .then((response) => {
-        setUser(response.data.user)
-      })
-  }, [userId, token])
+    getPost();
+  }, [getPost])
 
   const fadeProperties = {
     transitionDuration: 200,
@@ -81,9 +34,9 @@ export default function ShowPost({ close, postId, userId }: any) {
       <button className='close' onClick={close}>
         <FiX size={30} color='#FFF' />
       </button>
-      <section className='container_home'>
+      {post && <section className='container_home'>
         <div>
-          {post.images ? (
+          {post.images.length > 1 && (
             <Slide {...fadeProperties}>
               {post.images.map((currentImage, index) => (
                 <div key={index}>
@@ -94,7 +47,8 @@ export default function ShowPost({ close, postId, userId }: any) {
                 </div>
               ))}
             </Slide>
-          ) : (
+          )}
+          {post.images.length === 1 && (
             <div key={post._id}>
               <img
                 src={`${process.env.REACT_APP_API}/images/posts/${post.images}`}
@@ -111,14 +65,14 @@ export default function ShowPost({ close, postId, userId }: any) {
               ? post.comments.map((comment, index) => (
                   <>
                     <div>
-                      <p key={index}>{comment.Text}</p>
+                      <p key={index}>{comment.user + ": " + comment.text}</p>
                     </div>
                   </>
                 ))
               : ''}
           </div>
         </div>
-      </section>
+      </section>}
     </article>
   )
 }
